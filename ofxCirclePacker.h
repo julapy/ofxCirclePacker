@@ -45,6 +45,8 @@ public:
 
 	int	count;
 	bool bAlive;
+    
+    vector<ofxCirclePackerItem*> neighbours;
 };
 
 class ofxCirclePacker : public ofBaseApp

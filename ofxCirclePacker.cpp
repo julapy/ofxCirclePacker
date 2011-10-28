@@ -72,26 +72,47 @@ void ofxCirclePacker :: update ()
 	if( bPaused )
 		return;
     
+    ofxCirclePackerItem *c1;
+    ofxCirclePackerItem *c2;
+    
     //---------------------------------------------------------- add new circles.
     for( int i=0; i<circlesToAdd.size(); i++ )
-        circles.push_back( circlesToAdd[ i ] );
+    {
+        c1 = circlesToAdd[ i ];
+        
+        for( int j=0; j<circles.size(); j++ )
+        {
+            c2 = circles[ j ];
+            
+            float d  = ofDist( c1->x, c1->y, c2->x, c2->y );
+            float r1 = c1->radiusMax;
+            float r2 = c2->bAlive ? c2->radiusMax : c2->radius;
+            float r  = r1 + r2;
+            
+            if( d < r )
+            {
+                c1->neighbours.push_back( c2 );
+                c2->neighbours.push_back( c1 );
+            }
+        }
+        
+        circles.push_back( c1 );
+    }
     circlesToAdd.clear();
     
 	if( circles.size() == 0 )
 		return;
     
-    ofxCirclePackerItem *c1;
-    ofxCirclePackerItem *c2;
-    
     int i, j, t;
 	
     //---------------------------------------------------------- check collisions.
-	for( i=0; i<circles.size()-1; i++)
+	for( i=0; i<circles.size(); i++)
 	{
-		for( j=i+1; j<circles.size(); j++ )
+        c1 = circles[ i ];
+        
+		for( j=0; j<c1->neighbours.size(); j++ )
 		{
-            c1 = circles[ i ];
-            c2 = circles[ j ];
+            c2 = c1->neighbours[ j ];
             
 			if( !c1->bAlive && !c2->bAlive )
 				continue;
@@ -118,6 +139,24 @@ void ofxCirclePacker :: update ()
         
 		if( c1->count == 0 && !c1->bAlive )
 		{
+            for( int j=0; j<c1->neighbours.size(); j++ )
+            {
+                c2 = c1->neighbours[ j ];
+                
+                int k = 0;
+                int n = c2->neighbours.size();
+                for( k; k<n; k++ )
+                {
+                    if( c2->neighbours[ k ] == c1 )
+                    {
+                        c2->neighbours.erase( c2->neighbours.begin() + k );
+                        
+                        --k;
+                        --n;
+                    }
+                }
+            }
+            
 			circles.erase( circles.begin() + i );
             delete c1;
             
@@ -126,7 +165,7 @@ void ofxCirclePacker :: update ()
 		}
 	}
 	
-    //---------------------------------------------------------- 
+    //---------------------------------------------------------- update.
 	for( i=0; i<circles.size(); i++ )
 	{
         c1 = circles[ i ];
