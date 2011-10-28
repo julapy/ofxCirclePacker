@@ -31,6 +31,7 @@ public:
     
     float getRadius     () { return radius + gap; }
     float getRadiusNext () { return radius + radiusGrowth + gap; }
+    float getRadiusMax  () { return radiusMax + gap; }
     
     float x;
     float y;

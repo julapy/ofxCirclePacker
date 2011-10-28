@@ -85,11 +85,11 @@ void ofxCirclePacker :: update ()
             c2 = circles[ j ];
             
             float d  = ofDist( c1->x, c1->y, c2->x, c2->y );
-            float r1 = c1->radiusMax;
-            float r2 = c2->bAlive ? c2->radiusMax : c2->radius;
+            float r1 = c1->getRadiusMax();
+            float r2 = c2->bAlive ? c2->getRadiusMax() : c2->getRadius();
             float r  = r1 + r2;
             
-            if( d < r )
+            if( d <= r )
             {
                 c1->neighbours.push_back( c2 );
                 c2->neighbours.push_back( c1 );
@@ -143,16 +143,13 @@ void ofxCirclePacker :: update ()
             {
                 c2 = c1->neighbours[ j ];
                 
-                int k = 0;
-                int n = c2->neighbours.size();
-                for( k; k<n; k++ )
+                for( int k=0; k<c2->neighbours.size(); k++ )
                 {
                     if( c2->neighbours[ k ] == c1 )
                     {
                         c2->neighbours.erase( c2->neighbours.begin() + k );
                         
-                        --k;
-                        --n;
+                        break;
                     }
                 }
             }
@@ -176,7 +173,10 @@ void ofxCirclePacker :: update ()
 			c1->count  += 1;
 			
 			if( c1->radius >= c1->radiusMax )
+            {
+                c1->radius = c1->radiusMax;
 				c1->bAlive = false;
+            }
 		}
 	}
 }
@@ -201,6 +201,14 @@ void ofxCirclePacker :: draw ()
 //-------------------------------------------------------------- reset.
 void ofxCirclePacker :: reset ()
 {
+    for( int i=0; i<circlesToAdd.size(); i++ )
+        delete circlesToAdd[ i ];
+
+    circlesToAdd.clear();
+    
+    for( int i=0; i<circles.size(); i++ )
+        delete circles[ i ];
+    
 	circles.clear();
 }
 
