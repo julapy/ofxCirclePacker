@@ -69,12 +69,12 @@ public :
     ( 
         float x,
         float y,
-        float radiusMin,
-        float radiusMax,
-        float radiusGrowth,
-        float gap,
-        const ofColor &colorFill,
-        const ofColor &colorStroke
+        float radiusMin             = 0.1,
+        float radiusMax             = 10.0,
+        float radiusGrowth          = 0.1,
+        float gap                   = 0,
+        const ofColor &colorFill    = ofColor( 255 ),
+        const ofColor &colorStroke  = ofColor( 255 )
     );
 	
 	void writeToFile	( string filename = "circle_data.xml" );
