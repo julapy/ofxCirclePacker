@@ -169,11 +169,11 @@ void ofxCirclePacker::draw() {
         
 		ofFill();
         ofSetColor(c->colorFill);
-		ofCircle(c->x, c->y, c->radius);
+		ofDrawCircle(c->x, c->y, c->radius);
         
 		ofNoFill();
         ofSetColor(c->colorStroke);
-		ofCircle(c->x, c->y, c->radius);
+		ofDrawCircle(c->x, c->y, c->radius);
 	}
 }
 
